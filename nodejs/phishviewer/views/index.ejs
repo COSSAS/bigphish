@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ <%- include ("partials/head") %>
+</head>
+<body>
+<%- include ("partials/menu") %>
+<section class="jumbotron text-center bg-light">
+    <div class="container">
+        <h1 class="jumbotron-heading">Hi <b><%= user.uid %><%= user.username %></b>, welcome to BigPhish</h1>
+        <p class="lead text-muted">All detected and currently active phishing domains can be viewed here! <br> (<%= active_domains.length %> domains)</p>
+    </div>
+</section>
+
+<div class="container-fluid bg-3 text-center">
+<!--   <h3><%= page %></h3><br> -->
+    <div class="album py-5">
+        <div class="container">
+            <div class="row">
+              <% if (active_domains.length) {
+                  %>
+                    <% active_domains.forEach((item) => {
+                      %>
+                      <div class="col-md-4">
+                        <form action="/domain" method="post">
+                          <div class="card mb-4 box-shadow" >
+                            <% if (item.screenshot_path.length) { %>
+                            <img class="card-img-top" src="<%= item.screenshot_path %>" data-holder-rendered="true" onclick="submit()">
+                            <% } else {%>
+                            <img class="card-img-top" src="/images/noscreenshot.png" data-holder-rendered="true" onclick="submit()">
+                            <% } %>
+                            <div class="card-body">
+                            <p class="card-text">
+                                <input type="hidden" name="domain" value="<%= item.domain_name %>"/>
+                                <p><b><%= item.domain_name %></b></p>
+                            </p>
+                              <div class="d-flex justify-content-between align-items-center">
+                                <button type="submit" class="btn btn-secondary">Details</button>
+                                <div class="widget widget-tags">
+                                    <div class="widget-body">
+                                        <div class="nav tag-cloud" style="color:#ffffff;">
+                                            <a><%= item.identified_kits %></a>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                     <%
+                }) %>
+            <%
+            } %>
+          </div>
+      </div>
+    </div>
+</div>
+    <%- include ("partials/footer") %>
+
+</body>
+<%- include ("partials/script") %>
+</html>
+

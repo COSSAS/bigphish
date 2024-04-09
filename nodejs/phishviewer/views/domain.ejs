@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <%- include ("partials/head") %>
+ <link rel="stylesheet" type="text/css" href="../css/flag-icon.css" />
+</head>
+<body>
+<%- include ("partials/menu") %>
+<div class="container">
+    <div class="container">
+        <div class="row align-items-start">
+
+            <!-- Left part: screenshot/history -->
+            <div class="col-lg-8 m-15px-tb">
+                <div class="d-grid gap-3">
+                    <article class="article">
+                        <% if (locals.domain_details.pages.length) { %>
+                            <% if (domain_details.pages[0].screenshot != "") { %>
+                                <div class="article-img">
+                                    <img class="card-img-top" src="<%= domain_details.pages[0].screenshot %>" data-holder-rendered="true">
+                                </div>
+                            <% } else { %>
+                                <div class="article-img">
+                                    <img class="card-img-top" src="/images/noscreenshot.png" data-holder-rendered="true">
+                                </div>
+                            <% } %>
+                        <% } else { %>
+                        <div class="article-img">
+                            <img class="card-img-top" src="/images/noscreenshot.png" data-holder-rendered="true">
+                        </div>
+                        <% } %>
+                        <div class="article-title">
+                            <h2><b><%= domain_details.domain %></b></h2>
+                        </div>
+                        <div class="article-content">
+
+                        </div>
+                    </article>
+
+                    <!-- Buttons -->
+                    <div class="row">
+                        <div class="col-5">
+                            <a type="button" data-bs-toggle="modal" data-bs-target="#reportGSBModal" class="btn btn-warning <% if (domain_details.state != 'online'){ %><%= 'disabled'%><% } %>">Report to GSB </a>
+                            <a type="button" data-bs-toggle="modal" data-bs-target="#reportNetCraftModal" class="btn btn-warning <% if (domain_details.state != 'online'){ %><%= 'disabled'%><% } %>">Report to NetCraft</a>
+                        </div>
+
+                        <div class="col-2">
+                            <a type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#markAsFPModal">Mark as FP</a>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- History -->
+                    <% if (locals.domain_details.pages.length) { %>
+                        <h3>History</h3>
+                        <div class="accordion" id="accordionPanelsStayOpenExample">
+                            <% Object.keys(domain_details.pages).forEach((page) => { %>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="panelsStayOpen-heading<%= page %>">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse<%= page %>" aria-expanded="false" aria-controls="panelsStayOpen-collapse<%= page %>">
+                                        <%= domain_details.pages[page].crawl_date %> - <%= domain_details.pages[page].state %>
+                                    </button>
+                                </h2>
+                                <div id="panelsStayOpen-collapse<%= page %>" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading<%= page %>">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <a href="#" class="pop">
+                                                        <% if (domain_details.pages[page].screenshot != "") { %>
+                                                            <img class="border border-secondary" src="<%= domain_details.pages[page].screenshot %>" data-holder-rendered="true">
+                                                        <% } else {%>
+                                                            <img class="border border-secondary" src="/images/noscreenshot.png" data-holder-rendered="true">
+                                                        <% } %>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    <h4><%= domain_details.pages[page].doc_title %> </h4>
+                                                    <code class="text-break"><%= domain_details.pages[page].landing_url %></code>
+                                                </div>
+                                                <br>
+                                                <div class="row">
+                                                    <div class="widget widget-tags">
+                                                        <div class="widget-body">
+                                                            <div class="nav tag-cloud">
+                                                            <% domain_details.phishing_kits_identified.forEach((item) => {%>
+                                                                <a href="/search/?field=identified_kits&query=<%= item %>"><%= item %></a>
+                                                            <% }) %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr class="my-4">
+                                        <div class="row">
+                                            <div class="row">
+                                                <h5>Resolved URLs</h5>
+                                            </div>
+                                            <div class="row">
+                                                <% domain_details.pages[page].resolved_urls.forEach((res_url) => {%>
+                                                    <code class="text-break"><%= res_url %></code>
+                                                <% }) %>
+                                            </div>
+                                            <% if (domain_details.pages[page].resources.length) { %>
+                                                <hr class="my-4">
+                                                <div class="row">
+                                                    <h5>Resources</h5>
+                                                </div>
+                                                <div class="row">
+                                                    <% domain_details.pages[page].resources.forEach((res) => {%>
+                                                        <code class="text-break"><%= res %></code>
+                                                    <% }) %>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                        </div>
+                    <% } %>
+                    <!-- End history -->
+                </div>  
+            </div>
+            <!-- End left part -->
+
+            <!-- Image modal -->
+            <div class="modal fade" id="imagemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Preview</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                            <div class="modal-body">
+                            <img src="" class="imagepreview" style="width: 100%;" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End image modal -->
+            
+            <!-- Start right part: info, phishing kits, timeline, WHOIS -->
+            <div class="col-lg-4 m-15px-tb blog-aside">
+                <div class="widget widget-author">
+                    <div class="widget-title">
+                        <h3>Information</h3>
+                    </div>
+                    <div class="widget-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Status</th>
+                                    <% if (domain_details.state == 'online') { %>
+                                        <td><i class="fa fa-circle text-success" aria-hidden="true"></i> Online</td>
+                                    <% } else {%>
+                                        <td><i class="fa fa-circle text-danger" aria-hidden="true"></i> Offline</td>
+                                    <% } %>
+                                </tr>
+                                <tr>
+                                    <th scope="row">First online</th>
+                                    <td><%= domain_details.date_first_online %></td>
+                                </tr>
+                                <% if (domain_details.state == 'offline') { %>
+                                <tr>
+                                    <th scope="row">Last online</th>
+                                    <td><%= domain_details.date_offline %></td>
+                                </tr>
+                                <% } %>
+                                <tr>
+                                    <th scope="row">Uptime</th>
+                                    <td><%= domain_details.total_uptime_hour %> hours</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">SafeBrowsing</th>
+                                    <td><a href='https://transparencyreport.google.com/safe-browsing/search?url=<%= domain_details.domain %>&hl=nl' rel='noopener noreferrer' target='_blank'><span class="badge bg-<% if (domain_details.gsb_status === true){ %>success<% } else {%>danger<% }%>">
+                                        <% if (domain_details.gsb_status === true){ %>reported<% } else {%>unknown<% } %></span>
+                                    </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">IP Address</th>
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td><a href="/search/?field=ip&query=<%= domain_details.ip %>"><%= domain_details.ip %></a></td>
+                                            </tr>
+                                            <tr>
+                                                <td><%= domain_details.ip_country_name %>
+                                                <span class="flag-icon flag-icon-<%= domain_details.ip_country.toString().toLowerCase() %>"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><%= domain_details.ip_location %>
+                                            </tr>
+                                        </table>
+                                    </td>        
+                                </tr>
+                                <tr>
+                                    <th scope="row">Server</th>
+                                    <td><a href="/search/?field=server_header&query=<%= domain_details.server_header %>"><%= domain_details.server_header %></a></td>
+                                </tr>
+                                <% if (domain_details.nameservers.length) {%>
+                                    <tr>
+                                        <th scope="row">Nameservers</th>
+                                        <td>
+                                            <table>
+                                                <% domain_details.nameservers.forEach((nameserver) => {%>
+                                                <tr>
+                                                    <td><code class="text-break"><%= nameserver %></code></td>
+                                                </tr>
+                                                <% }) %>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                                <% if (domain_details.free_ca) { %>
+                                <tr>
+                                    <th scope="row">Certificate</th>
+                                    <td><%= domain_details.free_ca %></td>
+                                </tr>
+                                <% } %>
+                                <% if (domain_details.uadmin_login) { %>
+                                <tr>
+                                    <th scope="row">Panel login</th>
+                                    <td><code class="text-break"><%= domain_details.uadmin_login %></code></td>
+                                </tr>
+                                <% } %>
+                                <% if (domain_details.uadmin_login_title) { %>
+                                <tr>
+                                    <th scope="row">Panel title</th>
+                                    <td><a href="/search/?field=uadmin_login_title&query=<%= domain_details.uadmin_login_title %>"><%= domain_details.uadmin_login_title %></a></td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <% if (domain_details.phishing_kits_identified.length) { %>
+                <!-- Identified kits -->
+                <div class="widget widget-tags">
+                    <div class="widget-title">
+                        <h3>Identified phishing kits</h3>
+                    </div>
+                    <div class="widget-body">
+                        <div class="nav tag-cloud">
+                        <% domain_details.phishing_kits_identified.forEach((item) => {%>
+                            <a href="/search/?field=identified_kits&query=<%= item %>"><%= item %></a>
+                        <% }) %>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+
+                <% if (domain_details.phishing_kits_identified.length) { %>
+                <!-- Phishing line -->
+                <div id="phishing-line"></div>
+                <% } %>
+                
+                <!-- WHOIS part -->
+                <% if (domain_details.whois_registrar != "") { %>
+                <div class="widget widget-post">
+                    <div class="widget-title">
+                        <h3>WHOIS
+                            <a type="button" class="btn btn-outline-secondary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#whoisModal">
+                                <i class="fas fa-info-circle"></i>
+                            </a>
+                        </h3>
+                    </div>
+                    <div class="widget-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Registrar</th>
+                                    <td><a href="/search/?field=whois_registrar&query=<%= domain_details.whois_registrar%>"><%= domain_details.whois_registrar %></a>
+                                    <span class="flag-icon flag-icon-<%= domain_details.whois_country.toString().toLowerCase() %>"></span></td>
+                                </tr>
+                                <% if (domain_details.whois_reg_date != 0) { %>
+                                <tr>
+                                    <th scope="row">Registration date</th>
+                                    <td><%= new Date(domain_details.whois_reg_date) %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Expiration date</th>
+                                    <td><%= new Date(domain_details.whois_exp_date) %></td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <% } %>
+                <!-- End WHOIS part -->
+            </div>
+
+            <!-- End right part: info, kits, timeline, whois -->
+        </div>
+    </div>
+</div>
+
+<!-- List of domains in view modal -->
+<div class="modal fade" id="whoisModal" tabindex="-1" aria-labelledby="whoisModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="whoisModalLabel">WHOIS source</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="whoisModalBody">
+                <pre class="pre-scrollable"><code><%= domain_details.whois_source %></code></pre>
+            </div>
+            <div class="modal-footer" id="whoisModalFooter">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report to NetCraft Modal -->
+<div class="modal fade" id="reportNetCraftModal" tabindex="-1" aria-labelledby="reportNetCraftModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportNetCraftModalLabel">Report this domain to NetCraft</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="reportNetCraftModalBody">
+                <label for="reportNetCraftModalUrlSelect" class="form-label" id="reportNetCraftModalUrlSelectLabel">Select the URL to report</label>
+                <select class="form-select" size=10 id="reportNetCraftModalUrlSelect">
+                    <% domain_details.resolved_urls.forEach((item) => {%>
+                        <option value="<%= item %>"><%= item %></option>
+                    <% }) %>
+                </select>
+                </form>
+            </div>
+            <div class="modal-footer" id="reportNetCraftModalFooter">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick=reportToNetCraft()>Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report to GSB Modal -->
+<div class="modal fade" id="reportGSBModal" tabindex="-1" aria-labelledby="reportGSBModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportGSBModalLabel">Report this domain to Google Safebrowsing</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="reportGSBModalBody">
+                <label for="reportGSBModalUrlSelect" class="form-label" id="reportGSBModalUrlSelectLabel">Select the URL to report</label>
+                <select class="form-select" size=10 id="reportGSBModalUrlSelect">
+                    <% domain_details.resolved_urls.forEach((item) => { %>
+                        <option value="<%= item %>"><%= item %></option>
+                    <% }) %>
+                </select>
+                </form>
+            </div>
+            <div class="modal-footer" id="reportGSBModalFooter">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick=reportToGSB()>Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<!-- Mark as FP Modal -->
+<div class="modal fade" id="markAsFPModal" tabindex="-1" aria-labelledby="markAsFPModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="markAsFPModalLabel">Mark domain as False Positive</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="markAsFPModalBody">
+                <p id=markAsFPModalQuestion>Are you sure you want to mark <b><%= domain_details.domain %></b> as false positive? This action cannot be undone!</p>
+            </div>
+            <div class="modal-footer" id="markAsFPModalFooter">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-success" onclick=markFP()>Yes</button>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<%- include ("partials/script") %>
+</html>
+
+<script>
+    function markFP() {
+        $.ajax({
+            url: "/domain_fp",
+            type: 'POST',
+            cache: false,
+            data: { domain : "<%= domain_details.domain %>"},
+            success: function(data){
+                $("#markAsFPModalFooter").remove()
+                $("#markAsFPModalQuestion").remove()
+                $("#markAsFPModalBody").append("<p>Successfully marked <b><%= domain_details.domain %></b> as a False Positive</p>")
+                }
+            , error: function(jqXHR, textStatus, err){
+                alert('Something went wrong: '+textStatus+', error: '+err)
+              }
+            })
+    }
+
+    function reportToNetCraft() {
+        var urlToReport = $("#reportNetCraftModalUrlSelect").val();
+        $.ajax({
+            url: "/report_netcraft",
+            type: 'POST',
+            cache: false,
+            data: { url : urlToReport },
+            success: function(data){
+                $("#reportNetCraftModalFooter").remove()
+                $("#reportNetCraftModalUrlSelect").remove()
+                $("#reportNetCraftModalUrlSelectLabel").remove()
+                $("#reportNetCraftModalBody").append("<p>Successfully reported <b>" + urlToReport + "</b> to NetCraft, \
+                    uuid: <a href='https://report.netcraft.com/submission/" + data + "' rel='noopener noreferrer' target='_blank'>" + data + "</a></p>")
+            }
+            , error: function(jqXHR, error, reason){
+                alert('Something went wrong: '+reason)
+            }
+        })
+    }
+
+    function reportToGSB() {
+        var urlToReport = $("#reportGSBModalUrlSelect").val();
+        $.ajax({
+            url: "/report_gsb",
+            type: 'POST',
+            cache: false,
+            data: { url : urlToReport },
+            success: function(data){
+                $("#reportGSBModalFooter").remove()
+                $("#reportGSBModalUrlSelect").remove()
+                $("#reportGSBModalUrlSelectLabel").remove()
+                $("#reportGSBModalBody").append("<p>Successfully reported <b>" + urlToReport + "</b> to Google SafeBrowsing, \
+                    check the current status: <a href='https://transparencyreport.google.com/safe-browsing/search?url=" + urlToReport + "&hl=nl' rel='noopener noreferrer' target='_blank'>here</a></p>") 
+            }
+            , error: function(jqXHR, error, reason){
+                alert('Something went wrong: '+reason)
+            }
+        })
+    }
+    
+</script>
+
+<script>
+Highcharts.chart('phishing-line', {
+    chart: {
+        zoomType: 'x',
+        type: 'timeline',
+        inverted: true
+    },
+    xAxis: {
+        type: 'datetime',
+        visible: false
+    },
+    yAxis: {
+        gridLineWidth: 1,
+        title: null,
+        type: 'logarithmic',
+        labels: {
+            enabled: false
+        }
+    },
+    legend: {
+        enabled: false
+    },
+    credits: {
+        enabled: false
+    },
+    title: {
+        text: 'Timeline'
+    },
+    subtitle: {
+        text: 'History of this phishing domain'
+    },
+    tooltip: {
+        style: {
+            width: 300
+        }
+    },
+    series: [{
+        dataLabels: {
+            enabled: true,
+            allowOverlap: false,
+            format: '<span style="color:{point.color}">● </span><span style="font-weight: bold;" > ' +
+                '{point.x:%d %B %Y %H:%m:%S}</span><br/>{point.label}'
+        },
+        marker: {
+            symbol: 'circle'
+        },
+        data: [
+            <% Object.keys(domain_details.history_chart).forEach((event) => { %>
+            {
+                x: new Date('<%= domain_details.history_chart[event].time %>').getTime(),
+                name: '<%= domain_details.history_chart[event].label %>',
+                label: '<%= domain_details.history_chart[event].label %>',
+                description: '<%= domain_details.domain %>'
+            },
+            <% }) %>
+        ]
+    }]
+});
+
+$(function() {
+		$('.pop').on('click', function() {
+			$('.imagepreview').attr('src', $(this).find('img').attr('src'));
+			$('#imagemodal').modal('show');
+		});
+});
+</script>

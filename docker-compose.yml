@@ -1,0 +1,239 @@
+name: "bigphish"
+
+services:
+  vpn: # starts the OpenVPN client to route traffic trough, from https://github.com/utkuozdemir/dperson-openvpn-client
+    image: ghcr.io/utkuozdemir/dperson-openvpn-client:2.6.8-alpine-3.19.1
+    cap_add: 
+      - NET_ADMIN
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    environment:
+      TZ: 
+    read_only: true
+    tmpfs:
+      - /run
+      - /tmp
+    restart: unless-stopped
+    security_opt: 
+      - label:disable
+    stdin_open: true
+    tty: true  # set the user and password in file and start
+    command: sh -c "echo -e '$VPN_USER\\n$VPN_PASS' > /vpn/auth.txt && chmod 600 /vpn/auth.txt && openvpn.sh"
+    volumes:
+      - /dev/net:/dev/net:z
+      - ./vpn:/vpn # folder which contains configuration
+
+  certstream: # from https://github.com/d-Rickyy-b/certstream-server-go
+    image: 0rickyy0/certstream-server-go:latest
+    restart: always
+    ports:
+      - 127.0.0.1:8080:80
+    volumes:
+      - ./certstream/config.yml:/app/config.yml
+
+  certscanner: # starts the certificate scanning tool
+    build: ./certscanner/.
+    tty: true
+    stdin_open: true
+    volumes:
+      - type: bind
+        source: ./config/lists/
+        target: /certscanner/lists/
+        read_only: true
+    environment:
+      TZ:
+      ES_HOST: 
+      ES_PASSWORD: 
+      ES_USER: 
+      CERTSCANNER_THRESHOLD:
+      PYTHONWARNINGS: "ignore:Unverified HTTPS request"
+    restart: always
+
+  crawler: # starts the domain crawler service
+    build: ./crawler/.
+    depends_on:
+      - vpn
+    network_mode: "service:vpn" # link this service to the vpn to route its traffic
+    tty: true
+    shm_size: '2gb'
+    stdin_open: true
+    environment:
+      TZ: 
+      CRAWLER_RELATED_KIT_RATIO: 
+      CRAWLER_RESTART_TIMEOUT:
+      CRAWLER_MONITORING_TIME: 
+      VPN_ASN : 
+      ES_HOST: 
+      ES_PASSWORD: 
+      ES_USER:
+      MINIO_HOST: 
+      MINIO_ROOT_USER:
+      MINIO_ROOT_PASSWORD:
+      URLSCANIO_API_KEY: 
+      PYTHONWARNINGS: "ignore:Unverified HTTPS request"
+      LOG_LEVEL: "INFO"
+    volumes:
+      - type: bind
+        source: ./config/phishing_kit_fingerprints.json
+        target: /crawler/phishing_kit_fingerprints.json
+        read_only: true
+      - type: bind
+        source: ./config/lists/valid_websites.json
+        target: /crawler/valid_websites.json
+        read_only: true
+    restart: always
+
+  elasticsearch: # starts the Elasticsearch instance
+    build:
+      context: elasticsearch/
+      args:
+        ES_VERSION:
+    volumes:
+      - es_bigphish_data:/usr/share/elasticsearch/data:rw
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: es_bigphish_data_backup
+        target: /tmp/elasticsearch/backup
+    ports:
+      - "127.0.0.1:9200:9200"
+      - "127.0.0.1:9300:9300"
+    environment:
+      TZ: 
+      ELASTIC_PASSWORD: $ES_PASSWORD
+      discovery.type: single-node
+    restart: on-failure
+
+  kibana: # starts the Kibana instance
+    build:
+      context: kibana/
+      args:
+        ES_VERSION: $ES_VERSION
+    volumes:
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    environment:
+      TZ:
+      ES_PASSWORD:
+      ES_USER: 
+      XPACK_REPORTING_KEY: 
+    ports:
+      - "127.0.0.1:5601:5601"
+    depends_on:
+      - elasticsearch
+    restart: on-failure
+
+  nodejs: # starts the NodeJS frontend
+    build:
+      context: ./nodejs/.
+      args:
+        NODE_VERSION: 
+    environment:
+      TZ: 
+      NODE_VERSION:
+      NODE_ENV: "production"   
+      API_URL_ENDPOINT: 
+      API_EXTENDED_AUTHENTICATION_KEY:
+      NETCRAFT_REPORT_EMAIL: 
+      AUTHENTICATION_SESSION_SECRET_KEY:
+      FRONT_END_USERNAME:
+      FRONT_END_PASSWORD:
+    tty: true
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: on-failure
+
+  api: # starts the API
+    build: ./api/.
+    tty: true
+    stdin_open: true
+    environment:
+      TZ: 
+      ES_HOST: 
+      ES_PASSWORD: 
+      ES_USER: 
+      API_EXTENDED_AUTHENTICATION_KEY: 
+      MINIO_HOST:
+      MINIO_ROOT_USER: 
+      MINIO_ROOT_PASSWORD:
+      GSB_API_KEY:
+    ports:
+      - "127.0.0.1:5000:5000"
+    volumes:
+      - type: bind
+        source: ./config/phishing_kit_fingerprints.json
+        target: /api/phishing_kit_fingerprints.json
+      - type: bind
+        source: ./config/api_tokens.json
+        target: /api/api_tokens.json
+    restart: always
+
+  monitor: # starts the monitor
+    build: ./monitor/.
+    tty: true
+    stdin_open: true
+    environment:
+      TZ: 
+      ES_HOST: 
+      ES_PASSWORD:
+      ES_USER: 
+      NOTIFICATION_EMAIL_PORT: 
+      NOTIFICATION_EMAIL_SERVER: 
+      NOTIFICATION_EMAIL_SENDER: 
+      NOTIFICATION_EMAIL_RECEIVER: 
+      NOTIFICATION_EMAIL_PASSWORD: 
+      SERVER_NAME: 
+      MONITOR_COUNTRY_FILTER:
+    restart: on-failure
+
+  nginx: # starts the bunkerized nginx container
+    image: bunkerity/bunkerweb:1.4.8
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - 80:8080
+      - 443:8443
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt
+    environment:
+      - SERVER_NAME=$SERVER_NAME
+      - SERVE_FILES=no
+      - DISABLE_DEFAULT_SERVER=yes
+      - AUTO_LETS_ENCRYPT=yes
+      - REDIRECT_HTTP_TO_HTTPS=yes
+      - USE_MODSECURITY=yes
+      - USE_MODSECURITY_CRS=no
+      - BAD_BEHAVIOR_THRESHOLD=30
+      - BAD_BEHAVIOR_BAN_TIME=7200
+      - USE_REVERSE_PROXY=yes
+      - REVERSE_PROXY_URL=/
+      - REVERSE_PROXY_HOST=http://nodejs:3000
+
+  minio: 
+    image: minio/minio:RELEASE.2024-01-01T16-36-33Z
+    command: server /data --console-address ":9001"
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - ./minio/data:/data
+    environment:
+      MINIO_ROOT_USER: 
+      MINIO_ROOT_PASSWORD: 
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+volumes:
+  es_bigphish_data:
+    driver: local
+  es_bigphish_data_backup:
+    driver: local

@@ -1,0 +1,47 @@
+{
+    "uAdmin": {
+        "pages": {
+            "antibot.php": "text/html",
+            "cloaker.php": "text/html",
+            "core/form/core_form.js": "application/javascript",
+            "core/token/core_token.js": "application/javascript",
+            "man.txt": "text/plain",
+            "newloader.gif": "image",
+            "texts.json": "application/json",
+            "uadmin/adm.php": "text/html",
+            "uadmin/gate.php": "text/html",
+            "uadmin/gates/token.php": "text/html",
+            "uadmin/manual.txt": "text/plain",
+            "uitleg.txt": "text/plain"
+        },
+        "searches": {
+            "hash:4d7f17c85fc247337a7d70f3993fa104a10f019a5af5131d0a30a55287a0320f": "uadmin/css/main.css",
+            "hash:9e4ba8ff7e82c30802a576bbd57f4e3df31708dfaea857c3f61bb3cf462722f2": "uadmin/js/main.js",
+            "hash:b513569cd5254fa5786b931d0080e05a67e05e8c5945b318fc2d56079371ba47": "uadmin/js/login.js",
+            "page.url:uadmin": "uadmin"
+        },
+        "panel":[
+            "uadmin/adm.php",
+            "adminpaneel/adm.php",
+            "admiinn/adm.php",
+            "adje/adm.php",
+            "admin/adm.php",
+            "chop/adm.php",
+            "workstation/adm.php"
+        ]
+    },
+    "Reliable Admin": {
+        "pages": {
+            "audio/vis.mp3": "audio",
+            "img/rabo/checkbox-no-focus.svg": "image",
+            "img/undraw_rocket.svg": "image",
+            "js/abn/identification.js": "application/javascript",
+            "js/abn/login_code.js": "application/javascript",
+            "js/overview.js": "application/javascript"
+        },
+        "panel": [
+            "login",
+            "dashboard"
+        ]
+    }
+}

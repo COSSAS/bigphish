@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ <%- include ("partials/head") %>
+</head>
+<body>
+<%- include ("partials/menu") %>
+<div class="container table-container">
+  <table class="table table-striped table-image-list">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Screenshot</th>
+        <th scope="col">Domain</th>
+        <th scope="col">Phishing kits</th>
+        <th scope="col">Location</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (active_domains.length) {
+        %>
+          <% active_domains.forEach((item, index) => {
+            %>
+            <form action="/domain" method="post">
+              <input type="hidden" name="domain" value="<%= item.domain_name %>"/>
+              <tr>
+                <th class="align-middle" scope="row"><%= index + 1 %></th>
+                <td class="w-25">
+                    <% if (item.screenshot_path.length) { %>
+                    <img class="img-fluid img-thumbnail" src="<%= item.screenshot_path %>" alt="Live screenshot" onclick="submit()">
+                    <% } else {%>
+                    <img class="img-fluid img-thumbnail" src="/images/noscreenshot.png" alt="No screenshot available" onclick="submit()">
+                    <% } %>
+                <td class="align-middle"><b><%= item.domain_name %></b></td>
+                <td class="align-middle">
+                  <div class="widget-body">
+                      <div class="nav tag-cloud" style="color:#ffffff;">
+                          <a><%= item.identified_kits %></a>
+                      </div>
+                  </div>
+                </td>
+                <td class="align-middle">
+                  <% if (item.location.city_name) { %>
+                    <%= item.location.city_name %>, <%= item.location.country_name %> <span class="flag-icon flag-icon-<%= item.location.country_iso_code.toString().toLowerCase() %>"></span>
+                    <% } else {%>
+                    <%= item.location.country_name %> <span class="flag-icon flag-icon-<%= item.location.country_iso_code.toString().toLowerCase() %>"></span>
+                  <% } %>
+                </td>
+                <td class="align-middle">
+                  <button class="btn btn-outline-secondary btn-sm float-end" type="submit">
+                    <i class="fas fa-info-circle"></i>
+                  </button>
+                </td>
+              </tr>
+            </form>
+        <%
+            }) %>
+        <%
+      } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include ("partials/footer") %>
+
+</body>
+<%- include ("partials/script") %>
+</html>
+

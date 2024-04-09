@@ -1,0 +1,51 @@
+.loader {
+  margin: auto;
+  height: 180px;
+  width: 180px;
+  display: flex;
+}
+.loader > :nth-child(1) {
+  height: inherit;
+  width: inherit;
+  animation-duration: 3s;
+}
+.loader > :nth-child(2) {
+  height: 120px;
+  width: 120px;
+  animation-duration: 1.5s;
+}
+.loader > :nth-child(3) {
+  height: 60px;
+  width: 60px;
+  animation-duration: 2s;
+}
+.loader > div {
+  animation-name: rotate;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  border: solid #000000 0.5px;
+  border-radius: 50%;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: rotate(0);
+}
+.loader > div > div {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background: #C41515;
+  position: absolute;
+  top: 0%;
+  right: 50%;
+  transform: translate(50%, -50%);
+}
+@keyframes rotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

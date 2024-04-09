@@ -1,0 +1,9 @@
+.idea/
+.ipynb_checkpoints/
+.pytest_cache/
+.pylintrc
+.coverage
+**.ipynb
+**.Rmd
+test_scanner.py
+README.md

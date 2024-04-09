@@ -1,0 +1,16 @@
+---
+## Default Kibana configuration from Kibana base image.
+## https://github.com/elastic/kibana/blob/master/src/dev/build/tasks/os_packages/docker_generator/templates/kibana_yml.template.js
+#
+server.name: kibana
+server.host: 0.0.0.0
+elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+
+# Higher download size for reporting files (500 Mb)
+xpack.reporting.csv.maxSizeBytes: 500000000
+
+## X-Pack security credentials
+elasticsearch.username: ${ES_USER}
+elasticsearch.password: ${ES_PASSWORD}
+xpack.reporting.encryptionKey: ${XPACK_REPORTING_KEY}

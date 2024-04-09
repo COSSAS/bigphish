@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<%- include ("partials/head") %>
+<link rel="stylesheet" href="/css/trends.css">
+<link rel="stylesheet" href="/css/loader.css">
+
+<style type="text/css">
+  body {
+    padding-bottom: 4px;
+  }
+</style>
+
+</head>
+<body>
+
+<%- include ("partials/menu") %>
+<div id="content">
+    <div id="top" class="p-4">
+        <div class="row top_divs">
+            <div class="col-4 top_divs">
+                <figure class="highcharts-figure">
+                    <div id="count_per_kits"></div>
+                </figure>
+            </div>
+            <div class="col-4">
+                <section id="info" class="text-center bg-light">
+                    <div class="container p-3">
+                        <h1 class="jumbotron-heading">Phishing Kit Trends</h1>
+                        <p class="lead text-muted">Get the latest statistics on phishing</p>
+
+                        <div class="row">
+                            <div class="d-flex justify-content-center">
+                                <form action="/trends" method="post" id="searchForm">
+                                    <label class="sr-only"></label>
+                                    <div class="input-group">
+                                      <input type="text" class="form-control" id="daterange" name="daterange">
+                                      <input type="text" class="form-control" id="specificKit" name="specificKit" hidden>
+                                      <button type="submit" class="btn btn-primary" id="load">Go</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+                <div class="container py-4">
+                    <div class="p-3 border bg-light text-center">
+                         Trends for the period
+                         <a type="button" class="btn btn-outline-secondary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#listOfDomainsModal">
+                            <i class="fas fa-list"></i>
+                         </a>
+                         <p class="fs-4"><%= date_from %> - <%= date_to %></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="container px-4">
+                  <div class="row gx-5">
+                    <div class="col-6">
+                     <div class="p-3 border bg-light text-center">
+                         Amount of active domains
+                         <p class="fs-2"><%= total_domains %></p>
+                     </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="p-3 border bg-light text-center">
+                         Newly seen domains
+                         <p class="fs-2"><%= total_new_domains %></p>
+                     </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="container py-4">
+                  <div class="row gx-5">
+                    <div class="col-6">
+                     <div class="p-3 border bg-light text-center">
+                         Most popular TLD
+                         <p class="fs-2 important-numbers">.<%= total_popular_tld %></p>
+                     </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="p-3 border bg-light text-center">
+                         Average uptime
+                         <p class="fs-2"><%= average_time_online %>h</p>
+                     </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="bottom" class="gy-5">
+        <figure class="highcharts-figure">
+            <div id="stacked_bar"></div>
+        </figure>
+
+
+    </div>
+    <%- include ("partials/footer") %>
+</div>
+
+<div class="loader" style="display:none;">
+  <div>
+    <div></div>
+  </div>
+  <div>
+    <div></div>
+  </div>
+  <div>
+    <div></div>
+  </div>
+</div>
+
+<!-- List of domains in view modal -->
+<div class="modal fade" id="listOfDomainsModal" tabindex="-1" aria-labelledby="listOfDomainsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="listOfDomainsModalLabel">All domains involved in this trend overview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="listOfDomainsModalBody">
+                <pre><code><% domains.forEach((item) => { %> <a href="/domain/?domain=<%= item %>"><%= item %></a> %><br><% }) %></code></pre>
+            </div>
+            <div class="modal-footer" id="listOfDomainsModalFooter">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<%- include ("partials/script") %>
+<script>
+
+    $("#load").click(function() {
+      $(".loader").css({ 'display' : ''});
+      $("#content").css({ 'display' : 'none'})
+    });
+
+  var start = "<%= date_from %>";
+  var end = "<%= date_to %>";
+
+  $('input[name="daterange"]').daterangepicker({
+    startDate: start,
+    endDate: end,
+    locale: {
+      format: 'YYYY/MM/DD'
+    }
+  });
+
+<!--  ========= Stacked bar chart ========= -->
+
+  Highcharts.chart('stacked_bar', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Identified kits per day'
+    },
+    xAxis: {
+        categories:  [
+        <% for (const item of stacked_bar_graph.date_series) { %>
+        "<%= item %>",
+        <% } %>
+        ]
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Total kits identified'
+        },
+        stackLabels: {
+            enabled: false,
+            style: {
+                fontWeight: 'bold',
+                color: ( // theme
+                    Highcharts.defaultOptions.title.style &&
+                    Highcharts.defaultOptions.title.style.color
+                ) || 'gray'
+            }
+        }
+    },
+    credits: {
+        enabled: false
+    },
+   legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'top',
+        x: 0,
+        y: 50,
+        floating: false,
+        borderWidth: 1,
+        backgroundColor:
+            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+        shadow: true
+    },
+    tooltip: {
+        headerFormat: '{point.x}<br/>',
+        pointFormat: '<b>{series.name}: {point.y} </b>'
+    },
+    plotOptions: {
+        column: {
+            groupPadding: 0,
+            pointPadding: 0,
+            stacking: 'normal',
+            dataLabels: {
+                enabled: false
+            }
+        }
+    },
+    series: [
+    <% for (const item in stacked_bar_graph.kit_counts) { %> {
+        type: 'column',
+        name: "<%= item %>",
+        data: [<%= stacked_bar_graph.kit_counts[item] %>]
+        },
+    <%
+    }
+    %>
+    {
+        type: 'spline',
+        name: 'Domains online',
+        data: [<%= domains_active_per_day %>],
+        marker: {
+            lineWidth: 3,
+            lineColor: "#000000",
+            fillColor: 'black'
+        },
+        color: "#000000",
+        lineWidth: 3
+    }]
+});
+
+<!--  ========= Bar chart ========= -->
+
+Highcharts.chart('count_per_kits', {
+    chart: {
+        type: 'bar',
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+        categories: [
+        <% for (const item of Object.keys(counts_per_kit)) { %>
+        "<%= item %>",
+        <% } %>
+        ]
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Total per kit'
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    legend: {
+        enabled: false,
+        reversed: true
+    },
+    plotOptions: {
+        series: {
+            stacking: 'normal',
+            cursor: 'pointer',
+            point: {
+                events: {
+                    click: function () {
+                        $("#specificKit").val(this.category);
+                        $("#searchForm").submit();
+                    }
+                }
+            }
+        }
+    },
+    series: [{
+        name: 'kits',
+        data: [<%= Object.values(counts_per_kit) %>]
+    }]
+});
+
+</script>
+
+</html>

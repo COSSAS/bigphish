@@ -1,0 +1,18 @@
+html, body{
+    height: 100%;
+}
+#content{
+    height:94%;
+}
+#top {
+    height:50%;
+}
+#bottom {
+    height:40%;
+}
+.top_divs, #stacked_bar, #count_per_kits,.highcharts-figure, .highcharts-data-table table {
+    height: 100%;
+}
+.important-numbers {
+
+}

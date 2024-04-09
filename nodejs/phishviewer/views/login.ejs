@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <%- include ("partials/head") %>
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body class="text-center">
+
+    <div class="form-signin">
+        <img class="mb-4" src="favicon.svg" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Welcome to BigPhish!</h1>
+        <h1 class="h6 mb-2 font-weight-normal">Please login</h1>
+       
+            <form action="/login/password" method="post">
+                <label for="username" class="sr-only">Username</label>
+                <input type="username" id="username" name="username" class="form-control" placeholder="Username" required="" autofocus="">
+                <label for="password" class="sr-only">Password</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
+
+                <button class="btn btn-lg btn-success btn-block" type="submit">Sign in</button>
+            </form>
+
+        <p class="mt-5 mb-3 text-muted">© <span id="currentYear"></span></p>
+
+    </div>
+
+<script>
+$("#currentYear").append(new Date().getFullYear())
+</script>
+
+</body>
+
+</html>

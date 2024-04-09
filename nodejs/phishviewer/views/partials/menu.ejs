@@ -1,0 +1,153 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+
+    <a class="navbar-brand" href="/">
+      <img src="favicon.svg" alt="" width="30" height="24" class="d-inline-block align-text-top">
+      BigPhish
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav mr-auto w-100 justify-content-start">
+          <li class="nav-item">
+            <a id="home" class="nav-link" href="/">Live <i class="fa fa-circle text-danger Blink"></i></a>
+          </li>
+          <li class="nav-item">
+            <a id="list" class="nav-link" href="/list">List</a>
+          </li>
+          <li class="nav-item">
+            <a id="search" class="nav-link" href="/search">Search</a>
+          </li>
+          <li class="nav-item">
+            <a id="trends" class="nav-link" href="/trends">Trends</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+          <li class="nav-item">
+            <button type="button" class="btn btn-outline-success me-2" id="NewDomainButton" data-bs-toggle="modal" data-bs-target="#addDomainModal">
+              Add domain
+            </button>
+          </li>
+          <li class="nav-item">
+            <button type="button" class="btn btn-outline-warning me-2" id="FPButton" data-bs-toggle="modal" data-bs-target="#addFPModal">
+              Modify kits
+            </button>
+          </li>
+          <li class="nav-item">
+            <a type="button" class="btn btn-outline-info" id="logout" href="/logout">
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- New Domain Modal -->
+<div class="modal fade" id="addDomainModal" tabindex="-1" aria-labelledby="addDomainModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addDomainModalLabel">Add a phishing domain</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <label for="domain_input" class="form-label">Enter the domain you wish to add</label>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="domain_input_addon">https://</span>
+            <input type="text" class="form-control" id="domain_input" aria-describedby="domain_input_addon">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick=addNewDomain()>Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modify FP Modal -->
+<div class="modal fade" id="addFPModal" tabindex="-1" aria-labelledby="addFPModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addFPModalLabel">Modify phishing kit fingerprints</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="textareaKitFingerprints"><b>Phishing kit URLs</b></label>
+            <textarea class="form-control fp-code" id="textareaKitFingerprints" rows="25"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick=submitFPChanges()>Modify</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  
+  // Load the contents of the FP files and display it in the textareas
+  $('#FPButton').on('click', function() {
+    $.ajax({
+        url: "/fp_details",
+        type: 'GET',
+        cache: false,
+        success: function(data){
+          $("#textareaKitFingerprints").val(JSON.stringify(data['kit_fingerprints'], undefined, 4));
+        },
+        error: function(jqXHR, textStatus, err){
+          alert('Something went wrong: '+textStatus+', error: '+err)
+        }
+    })
+  });
+
+  // Submit changes to the fingerprints to the server
+  function submitFPChanges() {
+    var kitFingerprints = $("#textareaKitFingerprints").val();
+
+    $.ajax({
+        url: "/fp_details",
+        type: 'POST',
+        cache: false,
+        data: { kit_fingerprints: kitFingerprints},
+        success: function(data){
+          alert('Success!');
+          $("#addFPModal").modal('hide');
+        },
+        error: function(jqXHR, textStatus, err){
+          alert('Something went wrong: '+textStatus+', error: '+err)
+        }
+    })
+  }
+
+  // Add a new domain to the monitoring
+  function addNewDomain() {
+    var newDomain = document.getElementById("domain_input").value;
+    $.ajax({
+        url: "/new_domain",
+        type: 'POST',
+        cache: false,
+        data: { domain: newDomain},
+        success: function(data){
+          alert('Success!')
+          $("#addDomainModal").modal('hide');
+          $("#domain_input").val("");
+        }
+        , error: function(jqXHR, textStatus, err){
+            alert('Something went wrong: '+textStatus+', error: '+err)
+        }
+    })
+  }
+</script>
