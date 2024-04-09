@@ -24,7 +24,7 @@ stages:
 black:
   stage: code-style
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install black
@@ -33,7 +33,7 @@ black:
 isort:
   stage: code-style
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install isort
@@ -46,7 +46,7 @@ isort:
 mypy: 
   stage: code-style
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install mypy
@@ -58,7 +58,7 @@ mypy:
 pur:
   stage: dependencies
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pur
@@ -71,7 +71,7 @@ pur:
 safety:
   stage: dependencies
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install safety
@@ -81,7 +81,7 @@ safety:
 pytest-certscanner:
   stage: test
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pytest-cov
@@ -91,7 +91,7 @@ pytest-certscanner:
 pytest-crawler:
   stage: test
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pytest
@@ -101,7 +101,7 @@ pytest-crawler:
 pytest-api:
   stage: test
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pytest
@@ -111,7 +111,7 @@ pytest-api:
 pylint-certscanner:
   stage: lint
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pylint
@@ -121,7 +121,7 @@ pylint-certscanner:
 pylint-crawler:
   stage: lint
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pylint
@@ -131,7 +131,7 @@ pylint-crawler:
 pylint-api:
   stage: lint
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pylint
@@ -141,7 +141,7 @@ pylint-api:
 pylint-monitor:
   stage: lint
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pylint
@@ -151,7 +151,7 @@ pylint-monitor:
 pydocstyle:
   stage: lint
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install pydocstyle
@@ -163,7 +163,7 @@ pydocstyle:
 vulture:
   stage: test
   only:
-    - master
+    - main
     - merge_requests
   script:
     - pip install vulture
