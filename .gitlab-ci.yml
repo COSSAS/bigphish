@@ -1,0 +1,173 @@
+image: python:3.11.0
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PYLINT_THRESHOLD: 7
+
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+before_script:
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - pip install -r certscanner/requirements.txt -r crawler/requirements.txt -r api/requirements.txt -r monitor/requirements.txt
+
+stages:
+  - code-style
+  - dependencies
+  - lint
+  - test
+
+black:
+  stage: code-style
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install black
+    - black -t py38 --check --diff certscanner/*py crawler/*py api/*py monitor/*py
+
+isort:
+  stage: code-style
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install isort
+    - isort --check --profile=black --diff certscanner/ 
+    - isort --check --profile=black --diff api/ 
+    - isort --check --profile=black --diff crawler/
+    - isort --check --profile=black --diff monitor/
+  allow_failure: true 
+
+mypy: 
+  stage: code-style
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install mypy
+    - mypy api/ --install-types --non-interactive --ignore-missing-imports --exclude tests/
+    - mypy certscanner/ --install-types --non-interactive --ignore-missing-imports --exclude tests/
+    - mypy crawler/ --install-types --non-interactive --ignore-missing-imports --exclude tests/
+    - mypy monitor/ --install-types --non-interactive --ignore-missing-imports --exclude tests/
+
+pur:
+  stage: dependencies
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pur
+    - pur -r certscanner/requirements.txt -d -z 
+    - pur -r crawler/requirements.txt -d -z  
+    - pur -r api/requirements.txt -d -z
+    - pur -r monitor/requirements.txt -d -z
+  allow_failure: true
+
+safety:
+  stage: dependencies
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install safety
+    - safety check
+  allow_failure: true
+
+pytest-certscanner:
+  stage: test
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pytest-cov
+    - cd certscanner/
+    - python3 -m pytest -vv
+
+pytest-crawler:
+  stage: test
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pytest
+    - cd crawler/
+    - python3 -m pytest test_crawler.py -vv
+
+pytest-api:
+  stage: test
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pytest
+    - cd api/
+    - python3 -m pytest test_api.py -vv
+
+pylint-certscanner:
+  stage: lint
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pylint
+    - cd certscanner/
+    - pylint --fail-under $PYLINT_THRESHOLD certscanner
+
+pylint-crawler:
+  stage: lint
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pylint
+    - cd crawler/
+    - pylint --fail-under $PYLINT_THRESHOLD crawler
+
+pylint-api:
+  stage: lint
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pylint
+    - cd api/
+    - pylint --fail-under $PYLINT_THRESHOLD api
+
+pylint-monitor:
+  stage: lint
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pylint
+    - cd monitor/
+    - pylint --fail-under $PYLINT_THRESHOLD monitor
+
+pydocstyle:
+  stage: lint
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install pydocstyle
+    - pydocstyle --match='(?!test_|_{2}).*\.py' api/
+    - pydocstyle --match='(?!test_|_{2}).*\.py' certscanner/
+    - pydocstyle --match='(?!test_|_{2}).*\.py' crawler/
+    - pydocstyle --match='(?!test_|_{2}).*\.py' monitor/
+
+vulture:
+  stage: test
+  only:
+    - master
+    - merge_requests
+  script:
+    - pip install vulture
+    - python -m vulture --min-confidence 100 --ignore-names api_key api/
+    - python -m vulture --min-confidence 100 --ignore-names context certscanner/
+    - python -m vulture --min-confidence 100 crawler/
+    - python -m vulture --min-confidence 100 monitor/

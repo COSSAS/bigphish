@@ -1,0 +1,40 @@
+fail_fast: true
+default_stages: [commit]
+default_language_version:
+    python: python3.11
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+    -   id: check-yaml
+    -   id: check-added-large-files
+    -   id: detect-private-key
+    -   id: check-ast
+    -   id: check-case-conflict
+    -   id: check-json
+    -   id: check-merge-conflict
+    -   id: mixed-line-ending
+    -   id: requirements-txt-fixer
+-   repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+      - id: black
+        name: black
+-   repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort
+        args: ['--profile=black']
+-   repo: https://github.com/pycqa/pydocstyle
+    rev: 6.3.0
+    hooks:
+    -   id: pydocstyle
+        args: ['--match="(?!test_).*\.py"']
+-   repo: local
+    hooks:
+    -   id: system
+        name: EJSlint
+        entry: ejslint *.ejs partials/*.ejs
+        pass_filenames: false
+        language: system

@@ -1,0 +1,16 @@
+beautifulsoup4==4.12.3
+dnspython==2.6.1
+elasticsearch==8.13.0
+elasticsearch_dsl==8.13.0
+html5lib==1.1
+imagehash==4.3.1
+minio==7.2.5
+Pillow==10.3.0
+psutil==5.9.8
+python-whois==0.9.3
+requests==2.31.0
+selenium==4.19.0
+selenium-wire==5.1.0
+tld==0.13
+wfuzz==3.1.0
+wrapt-timeout-decorator==1.5.1

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <%- include ("partials/head") %>
+ <style type="text/css">
+  body {
+    padding-bottom: 75px;
+  }
+
+  svg {
+    font: 10px sans-serif;
+    shape-rendering: crispEdges;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+  }
+
+  path.domain {
+    stroke: none;
+  }
+
+  .y .tick line {
+    stroke: #ddd;
+  }
+  </style>
+</head>
+<body>
+
+<%- include ("partials/menu") %>
+<section class="jumbotron text-center bg-light">
+    <div class="container">
+        <h1 class="jumbotron-heading">You know, for search</h1>
+        <p class="lead text-muted">Search for phishing by domains, IPs or other keywords</p>
+
+        <div class="row">
+        <div class="col-12">
+        <form action="/search" method="post">
+
+
+
+            <div class="input-group">
+              <input type="text" class="form-control" id="daterange" name="daterange">
+              <select id="field" name="field" class="form-select" aria-label="Select the search type">
+                <option value="domain" selected>Domain name</option>
+                <option value="ip">IP</option>
+                <option value="server_header">Server header</option>
+                <option value="identified_kits">Kit name</option>
+                <option value="uadmin_login_title">Panel title</option>
+              </select>
+              <input type="text" class="form-control" id="query" name="query" aria-label="Enter your search input" required>
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+            <br>
+            <div class="input-group justify-content-center">
+              <div class="form-check">
+                <input class="form-check-input" value="True" name="only_identified" type="checkbox" id="only_identified" checked>
+                <label class="form-check-label" for="only_identified">
+                  Include only identified domains
+                </label>
+              </div>
+            </div>
+          
+        </form>
+        </div>  
+        </div>
+    </div>
+</section>
+
+<% if (locals.query_results) { %>
+<div class="container">
+    <% if (locals.searched_for) { %>
+    <div>
+        <div class="text-center pt-5 pb-5">
+            <h3><span class="text-muted">Search results for: </span><%= searched_for %> (<%= query_results.length %> results)</h3>
+        </div>
+    </div>
+    <% } %>
+    <table class="table">
+    <thead>
+    <tr>
+        <th>Online?</th>
+        <th>Domain name</th>
+        <th>First seen</th>
+      </tr>
+      </thead>
+        <tbody>
+
+            <% query_results.forEach((item) => {
+              %>
+                <tr>
+                    <% if (item.state == 'online') { %>
+                        <td><i class="fa fa-circle text-success" aria-hidden="true"></i> Online</td>
+                    <% } else {%>
+                        <td><i class="fa fa-circle text-danger" aria-hidden="true"></i> Offline</td>
+                    <% } %>
+                    <td><a href="/domain/?domain=<%= item.domain %>&type=domain"><%= item.domain %></a></td>
+                    <td><%= item.first_crawled.split('T')[0] %></td>
+                </tr>
+              <%
+            }) %>
+
+    </tbody>
+  </table>
+</div>
+<% } %>
+</div>
+
+<%- include ("partials/footer") %>
+
+</body>
+<%- include ("partials/script") %>
+<script>
+  var start = moment().subtract(1, 'months');
+  var end = moment();
+
+  $('input[name="daterange"]').daterangepicker({
+    startDate: start,
+    endDate: end,
+    locale: {
+      format: 'YYYY/MM/DD'
+    }
+  });
+</script>
+
+</html>

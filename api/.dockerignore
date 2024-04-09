@@ -1,0 +1,6 @@
+.pylintrc
+.ipynb_checkpoints/
+.pytest_cache/
+.coverage
+**.ipynb
+test_api.py
