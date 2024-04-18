@@ -7,7 +7,7 @@ from typing import Set
 
 from elasticsearch_dsl import A, Search
 
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch  # type: ignore
 
 ES_HOST = str(environ.get("ES_HOST"))
 ES_USER = str(environ.get("ES_USER"))
