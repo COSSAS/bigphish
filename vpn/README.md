@@ -1,6 +1,6 @@
 # OpenVPN Client
 
-> Refer to [Github](https://github.com/dperson/openvpn-client) for the complete documentation
+> Refer to [Github](https://github.com/utkuozdemir/dperson-openvpn-client) for the complete documentation
 
 ## Installation
 This container routes all crawler traffic through a VPN connection to the outside world. Follow the following steps to install this connection properly:
