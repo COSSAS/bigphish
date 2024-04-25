@@ -8,10 +8,7 @@
 [![https://cossas-project.org/portfolio/SOARCA/](https://img.shields.io/badge/website-cossas--project.org-orange)](https://cossas-project.org/portfolio/bigphish/)
 [![pipeline status](https://gitlab.com/cossas/bigphish/badges/main/pipeline.svg)](https://gitlab.com/cossas/bigphish/badges/-/commits/main)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-
-<!-- 
-[![Latest Release](https://ci.tno.nl/gitlab/cybercrime/phishing/bigphish/-/badges/release.svg)](https://ci.tno.nl/gitlab/cybercrime/phishing/bigphish/-/releases) -->
+[![Latest Release](https://gitlab.com/cossas/bigphish/-/badges/release.svg)](https://gitlab.com/cossas/bigphish/-/releases)
 </div></a>
 
 <hr style="border:2px solid gray"> </hr>
@@ -42,8 +39,8 @@ Each module functions within its own Docker container:
 4. **Kibana** for easy interaction with Elasticsearch.
 5. **VPN** routes the requests from the crawler through a VPN connection. Read more about this module in the respective [README](vpn/README.md).
 6. **API** to allow for easy and secure access to the phishing data. Read more about this module in the respective [README](api/README.md).
-7. **NodeJS** serves as a front-end Web application to interact nicely with the data. Read more about this module in the respective [README](nodejs/README.md).
-8. **NGINX** serves a bunkerized NGINX container located in front of the API to secure Internet-facing connections.
+7. **NodeJS** serves as a front-end Web application to interact nicely with the data.
+8. **NGINX** serves a bunkerized NGINX container located in front of the API to secure Internet-facing connections. Read more about this module on their [Github](https://github.com/bunkerity/bunkerweb).
 9. **MinIO** object storage to store objects like screenshots and downloaded phishing kits.
 10. **Monitor** service that monitors the phishing domains and sends out notifications about new domains.
 
@@ -258,7 +255,7 @@ Two buckets are created within your MinIO instance:
 - `found-phishing-kits` stores all the gathered phishing kits.
 
 ### API deployment
-To deploy the API behind an NGINX reverse proxy and an HTTPS connection, please do the following.
+To deploy the API behind an NGINX reverse proxy and a secured HTTPS connection, please do the following.
 
 Create a folder to store the Let's Encrypt certificates, e.g.
 ```

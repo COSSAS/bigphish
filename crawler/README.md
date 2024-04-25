@@ -11,7 +11,7 @@ Every hour, the crawler retrieves new domains from Elasticsearch, actively crawl
 For this module to run, you'll need:
 
 - Python 3.8 or higher and pip
-- Firefox together with Geckodriver
+- Firefox together with geckodriver
 - A working Internet connection
 
 To install the necessary dependencies of this project, just execute
@@ -24,7 +24,7 @@ But it is better to use the accompanied [Dockerfile](Dockerfile).
 
 ## Setup
 
-As mentioned in the main [README](README.md), customization is critical before deployment. 
+As mentioned in the main [README](../README.md), customization is critical before deployment. 
 The crawler relies on a given set of resources to detect phishing kits on live websites.
 Therefore, one should modify at least the following files in `/config/lists`:
 

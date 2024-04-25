@@ -6,7 +6,6 @@ from os import environ
 from typing import Any, Dict
 
 import requests
-
 from minio import Minio  # type:ignore
 
 MINIO_HOST = environ.get("MINIO_HOST", "")
