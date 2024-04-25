@@ -10,7 +10,7 @@ Once that score is above a customizable threshold, the domain will be flagged as
 
 For this module to run, you'll need:
 
-- Python 3.8 or higher and pip
+- Python 3.11 or higher and pip
 - A working Internet connection
 
 To install the necessary dependencies of this project, just execute
@@ -23,16 +23,16 @@ Or just use the [Dockerfile](Dockerfile) to deploy it through Docker.
 
 ## Setup
 
-As mentioned in the main [README](README.md), customization is critical before deployment. 
+As mentioned in the main [README](../README.md), customization is critical before deployment. 
 This phishing detector relies on a given set of resources to detect potential phishing domains from a stream of TLS certificates.
 Therefore, one should modify at least the following files in `/config/lists`:
 
 | File           	| Purpose                                                                                                       	| Example                                                                       	|
 |----------------	|---------------------------------------------------------------------------------------------------------------	|-------------------------------------------------------------------------------	|
-| **companies.json** 	| Add the companies to monitor for in this file, together with abbrevations or shortened versions of their name 	| `{      "paypal" : {          "paypal"  :  150 ,          "payp" :  70     } }` 	|
-| **malicious_keywords.json** 	| Add keywords to this file that relate to the companies monitored 	| `[ "register", "update", "payment", "verify", "decline"] `	|
-| **valid_websites.json** 	| Add all the valid domains for this company	| `["paypal.com"] `	|
-| **malicious_tlds.json** 	| Add a list of suspicious TLDs	| `["xyz", "tk"] `	|
+| **companies.json** 	| Add the companies to monitor for in this file, together with abbrevations or shortened versions of their name 	| `{"paypal" : { "paypal" : 150 , "payp" : 70 } }` 	|
+| **malicious_keywords.json** 	| Add keywords to this file that relate to the companies monitored 	| `[ "register", "update", "payment", "verify", "decline"]`	|
+| **valid_websites.json** 	| Add all the valid domains for this company	| `["paypal.com"]`	|
+| **malicious_tlds.json** 	| Add a list of suspicious TLDs	| `["xyz", "tk"]`	|
 
 
 ## Usage
