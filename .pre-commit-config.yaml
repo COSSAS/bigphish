@@ -31,6 +31,11 @@ repos:
     hooks:
     -   id: pydocstyle
         args: ['--match="(?!test_).*\.py"']
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies: ["types-requests"]
 -   repo: local
     hooks:
     -   id: system
