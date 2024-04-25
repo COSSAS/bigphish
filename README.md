@@ -1,10 +1,6 @@
 <div align="center">
 <a href="https://gitlab.com/cossas/bigphish/-/tree/master"><img src="bigphish-logo.jpg"/>
 
-
-# BigPhish
-
-
 [![https://cossas-project.org/portfolio/SOARCA/](https://img.shields.io/badge/website-cossas--project.org-orange)](https://cossas-project.org/portfolio/bigphish/)
 [![pipeline status](https://gitlab.com/cossas/bigphish/badges/main/pipeline.svg)](https://gitlab.com/cossas/bigphish/badges/-/commits/main)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
