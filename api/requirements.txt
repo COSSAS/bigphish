@@ -1,8 +1,8 @@
 elasticsearch==8.13.0
-elasticsearch_dsl==8.13.0
-fastapi==0.110.2
+elasticsearch_dsl==8.13.1
+fastapi==0.111.0
 httpx==0.27.0
-minio==7.2.5
+minio==7.2.7
 pydantic==2.7.1
 requests==2.31.0
 tld==0.13
