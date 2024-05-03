@@ -221,7 +221,7 @@ def retrieve_search_results(
     query: str,
     date_from: str,
     date_to: str,
-    only_identified: bool,
+    only_identified: bool = False,
     api_key: str = Security(get_extended_authentication_key),
 ):
     """Retrieve all domains for a search query."""
