@@ -8,7 +8,7 @@
   "dependencies": {
     "@babel/runtime": "^7.24.4",
     "@mapbox/node-pre-gyp": "^1.0.11",
-    "axios": "^0.27.2",
+    "axios": "^1.6.8",
     "connect-ensure-login": "^0.1.1",
     "connect-sqlite3": "^0.9.15",
     "cookie-parser": "~1.4.6",
@@ -18,11 +18,11 @@
     "http-errors": "^2.0.0",
     "json-destringify": "^1.0.5",
     "morgan": "^1.10.0",
-    "passport": "^0.6.0",
+    "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^3.1.0"
   }
 }
