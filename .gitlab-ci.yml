@@ -13,7 +13,7 @@ before_script:
   - pip install virtualenv
   - virtualenv venv
   - source venv/bin/activate
-  - pip install --upgrade pip==23.1.2
+  - pip install --upgrade pip==23.3.2
   - pip install -r certscanner/requirements.txt -r crawler/requirements.txt -r api/requirements.txt -r monitor/requirements.txt
 
 stages:
@@ -64,7 +64,7 @@ pur:
   script:
     - pip install pur
     - pur -r certscanner/requirements.txt -d -z 
-    - pur -r crawler/requirements.txt -d -z  
+    - pur -r crawler/requirements.txt -d -z --skip blinker
     - pur -r api/requirements.txt -d -z
     - pur -r monitor/requirements.txt -d -z
   allow_failure: true

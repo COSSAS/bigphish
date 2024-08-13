@@ -1,6 +1,6 @@
 """Domain object class."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class Domain:

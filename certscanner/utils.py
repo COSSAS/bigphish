@@ -1,6 +1,6 @@
 """Utilities for domain detection."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from re import match
 from typing import Dict, Tuple
 
