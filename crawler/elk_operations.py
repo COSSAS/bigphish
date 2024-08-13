@@ -38,7 +38,7 @@ def initialize_index(
         mapping.field(field, "object", enabled=False)
 
     # Save mapping to the index
-    result = mapping.save(index_name, using=es_connection)
+    result = mapping.save(index_name, using=es_connection)  # type: ignore
 
     # Check if the creation was successful and return that
     if result:
