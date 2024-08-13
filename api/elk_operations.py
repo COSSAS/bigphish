@@ -5,7 +5,7 @@ from os import environ
 from typing import Any, Dict, List, Set, Tuple, Union
 
 from elasticsearch_dsl import Search
-
+from elasticsearch_dsl.response import Hit
 # Retrieve environment variables for ES connection
 from utils import Domain
 
@@ -41,7 +41,7 @@ def test_elk() -> Tuple[bool, str]:
 
 def get_active_domains(
     only_identified: bool = True, only_domains: bool = False
-) -> Union[Set[str], List[str]]:
+) -> Union[Set[str], List[Hit]]:
     """
     Retrieve all active domains from the past hour.
 

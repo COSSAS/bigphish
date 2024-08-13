@@ -9,6 +9,7 @@ import requests
 from domain import Domain
 from elasticsearch.client import IndicesClient, IngestClient
 from elasticsearch_dsl import Mapping, Search
+from elasticsearch_dsl.response import Hit
 
 from elasticsearch import Elasticsearch  # type: ignore
 
@@ -158,7 +159,7 @@ def get_new_certscanner_domains() -> List[str]:
     return new_domains
 
 
-def get_offline_domains(time_ago: str = "5d") -> List[str]:
+def get_offline_domains(time_ago: str = "5d") -> List[Hit]:
     """
     Retrieve all offline domains from the last 5 days.
 
@@ -231,7 +232,7 @@ def fallback_check() -> Union[str, datetime]:
     return "now-1h"
 
 
-def get_online_domains() -> List[str]:
+def get_online_domains() -> List[Hit]:
     """
     Retrieve all online domains from the past hour.
 
