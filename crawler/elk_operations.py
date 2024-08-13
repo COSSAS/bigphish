@@ -1,7 +1,7 @@
 """Functions to communicate with Elasticsearch instance."""
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from os import environ
 from typing import List, Set, Union
 
@@ -217,9 +217,9 @@ def fallback_check() -> Union[str, datetime]:
         # Execute this search query
         res = search.execute()
 
-        # Calculate the time between this date and current utcnow()
+        # Calculate the time between this date and current now()
         latest_timestamp = datetime.fromisoformat(res.hits[0].crawl_date)
-        if (datetime.utcnow() - latest_timestamp).total_seconds() / 60 > 60:
+        if (datetime.now(timezone.utc) - latest_timestamp).total_seconds() / 60 > 60:
             logging.warning(
                 "Latest record is inserted into Elastic longer than 60 minutes ago!"
             )

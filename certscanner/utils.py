@@ -15,7 +15,7 @@ class Domain:
         self.domain_unconfused = ""
         self.tld = ""
         self.no_of_domains = 1
-        self.date = datetime.utcnow().isoformat()
+        self.date = datetime.now(timezone.utc).isoformat()
         self.unicode = False
         self.suspicious_tld = ""
         self.suspicious_keywords = set()

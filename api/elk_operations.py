@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Set, Tuple, Union
 
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.response import Hit
+
 # Retrieve environment variables for ES connection
 from utils import Domain
 
