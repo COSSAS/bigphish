@@ -18,7 +18,7 @@ RUN apt-get -y update && \
 
 # Install Python requirements
 COPY requirements.txt requirements.txt
-RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt
+RUN python3 -m pip install --upgrade pip==23.3.2 && pip3 install -r requirements.txt
 
 # Copy all necessary files and scripts
 COPY *.py *.json *.txt *.sh /crawler/

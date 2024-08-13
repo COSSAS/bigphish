@@ -2,7 +2,7 @@
 
 import hashlib
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from os import environ
 from typing import Any, Dict, Set
 
@@ -106,9 +106,9 @@ def check_if_already_inserted(domain_name: str, days_ago: int = 14) -> bool:
     try:
         document = Document.get(
             id=document_id, index=ES_INDEX, using=es_connection
-        ).to_dict()
+        ).to_dict()  # type: ignore
         document_date = datetime.fromisoformat(document["date"])
-        if (document_date - datetime.now()).days < days_ago:
+        if (document_date - datetime.now(timezone.utc)).days < days_ago:
             return True
 
     except NotFoundError:

@@ -3,7 +3,7 @@
 import json
 import logging
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from json import dumps
 from operator import itemgetter
 from os import environ
@@ -30,10 +30,10 @@ class Domain:
         """Initialize a new domain object."""
         self.domain = domain_name
         self.landing_url = ""
-        self.crawl_date = datetime.utcnow()
+        self.crawl_date = datetime.now(timezone.utc)
         self.state = "unknown"
         self.identified_as = "unknown"
-        self.first_crawled = datetime.utcnow()
+        self.first_crawled = datetime.now(timezone.utc)
         self.nameservers = []
 
         # Visual and source information
@@ -128,8 +128,8 @@ def process_domain_entries(
         "server_header": "",
         "phishing_kits_identified": set(),
         "date_certificate_issued": "",
-        "date_first_online": datetime.utcnow(),
-        "date_kit_installed": datetime.utcnow(),
+        "date_first_online": datetime.now(timezone.utc),
+        "date_kit_installed": datetime.now(timezone.utc),
         "gsb_status": gsb_status,
     }
 
@@ -279,7 +279,8 @@ def process_domain_entries(
         output["date_offline"] = output["date_offline"]
     else:
         output["total_uptime_hour"] = round(
-            (datetime.now() - output["date_first_online"]).total_seconds() / 3600
+            (datetime.now(timezone.utc) - output["date_first_online"]).total_seconds()
+            / 3600
         )
         output["date_offline"] = ""
 

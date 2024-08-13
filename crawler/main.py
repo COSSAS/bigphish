@@ -4,7 +4,7 @@ import argparse
 import json
 import logging
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from os import environ
 
 import dirbust
@@ -146,7 +146,7 @@ def crawling_process(domain: Domain) -> Domain:
     logging.info(f"[{domain.domain}] Analysis started")
 
     # Set a new timestamp of the current crawl
-    domain.crawl_date = datetime.utcnow()
+    domain.crawl_date = datetime.now(timezone.utc)
 
     # Store previous properties before updating
     previous_state = domain.state

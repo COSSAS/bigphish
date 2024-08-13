@@ -1,6 +1,6 @@
 """Domain object class."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class Domain:
@@ -10,10 +10,10 @@ class Domain:
         """Initialize a new domain object."""
         self.domain = domain_name
         self.landing_url = ""
-        self.crawl_date = datetime.utcnow()
+        self.crawl_date = datetime.now(timezone.utc)
         self.state = "unknown"
         self.identified_as = "unknown"
-        self.first_crawled = datetime.utcnow()
+        self.first_crawled = datetime.now(timezone.utc)
         self.nameservers = []
 
         # Visual and source information
