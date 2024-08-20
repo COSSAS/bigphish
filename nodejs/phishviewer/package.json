@@ -6,9 +6,9 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@babel/runtime": "^7.24.4",
+    "@babel/runtime": "^7.25.0",
     "@mapbox/node-pre-gyp": "^1.0.11",
-    "axios": "^1.6.8",
+    "axios": "^1.7.4",
     "connect-ensure-login": "^0.1.1",
     "connect-sqlite3": "^0.9.15",
     "cookie-parser": "~1.4.6",
@@ -23,6 +23,6 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.4"
   }
 }
