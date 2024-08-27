@@ -44,6 +44,25 @@ def main() -> None:
     logging.info(f"Monitoring done, {notifications} notifications sent.")
 
 
+def health_check() -> bool:
+    """Check if Elasticsearch is already up, tries 20 times before returning false.
+
+    Returns:
+        bool: true if running, false otherwise
+    """
+    for _ in range(0, 20):
+        if elk.test_elastic():
+            logging.info("Elasticsearch connection is successfully established")
+            return True
+
+        logging.warning(
+            "No Elasticsearch connection available, retrying in 5 seconds..."
+        )
+        sleep(5)
+    logging.error("No Elasticsearch connection available, stopping!")
+    return False
+
+
 if __name__ == "__main__":
     # Initialize logging facilities
     logging_format = logging.Formatter(
@@ -60,19 +79,22 @@ if __name__ == "__main__":
     logging.getLogger("elasticsearch").setLevel(logging.ERROR)
     logging.getLogger("elastic_transport").setLevel(logging.ERROR)
 
-    # Define a asynchronous scheduler
-    scheduler = AsyncIOScheduler(timezone="Europe/Amsterdam")
+    # Check if Elasticsearch is up and running
+    if health_check():
 
-    # Add main as a job for a fixed interval, but also start first run right away
-    scheduler.add_job(
-        main,
-        "interval",
-        seconds=SYNC_INTERVAL * 60,
-        next_run_time=datetime.now(),
-        max_instances=1,
-    )
-    scheduler.start()
-    try:
-        asyncio.get_event_loop().run_forever()
-    except (KeyboardInterrupt, SystemExit):
-        logging.info("BigPhish monitor has stopped")
+        # Define a asynchronous scheduler
+        scheduler = AsyncIOScheduler(timezone="Europe/Amsterdam")
+
+        # Add main as a job for a fixed interval, but also start first run right away
+        scheduler.add_job(
+            main,
+            "interval",
+            seconds=SYNC_INTERVAL * 60,
+            next_run_time=datetime.now(),
+            max_instances=1,
+        )
+        scheduler.start()
+        try:
+            asyncio.get_event_loop().run_forever()
+        except (KeyboardInterrupt, SystemExit):
+            logging.info("BigPhish monitor has stopped")
