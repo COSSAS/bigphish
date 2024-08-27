@@ -1,7 +1,7 @@
 <div align="center">
 <a href="https://gitlab.com/cossas/bigphish/-/tree/master"><img src="bigphish-logo.jpg"/>
 
-[![https://cossas-project.org/portfolio/SOARCA/](https://img.shields.io/badge/website-cossas--project.org-orange)](https://cossas-project.org/portfolio/bigphish/)
+[![https://cossas-project.org/portfolio/bigphish/](https://img.shields.io/badge/website-cossas--project.org-orange)](https://cossas-project.org/portfolio/bigphish/)
 [![pipeline status](https://gitlab.com/cossas/bigphish/badges/main/pipeline.svg)](https://gitlab.com/cossas/bigphish/badges/-/commits/main)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Latest Release](https://gitlab.com/cossas/bigphish/-/badges/release.svg)](https://gitlab.com/cossas/bigphish/-/releases)
@@ -18,7 +18,7 @@ _All COSSAS projects are hosted on [GitLab](https://gitlab.com/cossas/bigphish/)
 ## What is it?
 BigPhish is an application developed for Internet researchers and law enforcement professionals to study the deployment of phishing kits in the wild. 
 This software product originates from a [2021 USENIX paper](https://www.usenix.org/conference/usenixsecurity21/presentation/bijmans), which proposed a method to discover new phishing domains by leveraging Certificate Transparency (CT) logs. 
-By continuously monitoring these logs and crawling potential phishing domains, it can identify and monitor domains that have been setup up with a phishing kit. 
+By continuously monitoring these logs and crawling potential phishing domains, it can identify and monitor domains that have been set up with a phishing kit. 
 Phishing kits are identified by searching for fingerprints, which are unique file paths associated with those kits.
 BigPhish offers an all-in-one solution for monitoring CT logs, crawling domains, storing them in Elasticsearch and a Web application to interact with the results.
 
@@ -43,8 +43,8 @@ Each module functions within its own Docker container:
 ## Installation
 
 To run BigPhish, you'll need [Docker](https://docs.docker.com/get-docker/) including [Docker-compose](https://docs.docker.com/compose/) on a powerful server.
-We recommend at least 4 CPUs and 8GB of RAM for smooth operations. 
-Also, make sure to have at least 500GB of disk storage space available, as the data collection can become large.
+We recommend at least 4 CPUs and 8 GB of RAM for smooth operations. 
+Also, make sure to have at least 500 GB of disk storage space available, as the data collection can become large.
 
 With your hardware ready, first clone this repository by executing:
 
@@ -66,7 +66,7 @@ This table explains all the environment variables.
 | `CRAWLER_MONITORING_TIME`  	| Amount of days that the crawler keeps monitoring a domain 	| `5`  	|
 | `VPN_USER` 	| Email or username for the used VPN provider   	|   	|
 | `VPN_PASS`  	| Password for the used VPN provider      	|   	|
-| `VPN_ASN`  	| The ASN belonging to the VPN provider. This is used to check if a succesful connection through the VPN provider is made  	|   	|
+| `VPN_ASN`  	| The ASN belonging to the VPN provider. This is used to check if a successful connection through the VPN provider is made  	|   	|
 | `NODE_VERSION`  	| Version of Node to run the front-end application   	| `18.5.0`  	|
 | `ES_VERSION`  	| Version of Elasticsearch to be used  	|  `7.16.3` 	|
 | `ES_USER`  	| Username for connections with Elasticsearch  	| `elastic`  	|
@@ -93,7 +93,7 @@ This table explains all the environment variables.
 | `MONITOR_COUNTRY_FILTER`  	| two-character ISO country code to specify notification for a certain country 	|   	|
 
 ## Configuration
-BigPhish is a signature-based tool that requires some finetuning before it's operational.
+BigPhish is a signature-based tool that requires some fine tuning before it's operational.
 Fortunately, all configuration can be done by modifying simple JSON files in the `config` folder.
 
 ### `api_tokens.json`
@@ -160,7 +160,7 @@ As soon as a threshold score is reached, a domain is marked as potentially malic
 ```
 
 ### `lists/fp.json`
-Since crawling the Web for potential malicious domains can result in a large number of false positives, a list of known false positives strings can be added to this file. 
+Since crawling the Web for potential malicious domains can result in numerous false positives, a list of known false positives strings can be added to this file. 
 Domains partially matching these strings will be omitted from further analysis.
 
 ```
@@ -241,7 +241,7 @@ This will not spin up the NGINX server and the monitor.
 ### Elasticsearch indices
 Two indices are automatically created within your Elasticsearch instance. These are:
 
-- `domain_index` stores the potential phishing domains originating from the CertScanner.
+- `domain_index` stores the potential phishing domains originating from the Certscanner.
 - `crawler_index` stores all the information related to the crawls.
 
 ### MinIO buckets
@@ -264,7 +264,7 @@ By starting the NGINX container, certificates will be created automatically.
 
 ### Export data
 
-To dump all the data within the ElasticSearch instance, use [elasticsearch-dump](https://github.com/elasticsearch-dump/elasticsearch-dump).
+To dump all the data within the Elasticsearch instance, use [elasticsearch-dump](https://github.com/elasticsearch-dump/elasticsearch-dump).
 If you want to dump the complete `crawler_index` in your `/data` directory use:
 
 ```
