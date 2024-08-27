@@ -5,6 +5,7 @@ from datetime import datetime
 from os import environ
 from typing import Set
 
+import requests
 from elasticsearch_dsl import A, Search
 
 from elasticsearch import Elasticsearch  # type: ignore
@@ -29,6 +30,40 @@ def create_elastic_client() -> Elasticsearch:
         logging.error(f"Could not create Elasticsearch client {error}")
 
     return client
+
+
+def test_elastic() -> bool:
+    """Test the connection to Elasticsearch.
+
+    Returns:
+        bool: true if connected, false otherwise
+    """
+    try:
+        # Try to reach the Elasticsearch instance
+        if ES_HOST:
+            if ES_HOST.startswith("https"):
+                url = ES_HOST
+            else:
+                url = f"http://{ES_HOST}"
+            res = requests.get(url, auth=(ES_USER, ES_PASSWORD), verify=False)
+            if res.status_code == 200:
+                # Connect to Elasticsearch instance
+                es_connection = create_elastic_client()
+
+                # Fetch some information
+                info = es_connection.info()
+
+                logging.info(
+                    f'Connected to Elasticsearch. Cluster name: {info["cluster_name"]}, '
+                    f'version: {info["version"]["number"]}'
+                )
+                return True
+            return False
+        logging.error("No Elasticsearch credentials specified")
+        return False
+    except Exception as error:
+        logging.error(f"Elasticsearch error: {error}")
+        return False
 
 
 def retrieve_kit_installed_date(domain: str) -> datetime:
