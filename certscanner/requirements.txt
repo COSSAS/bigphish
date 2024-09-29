@@ -1,5 +1,5 @@
-elasticsearch==8.15.0
-elasticsearch_dsl==8.15.1
+elasticsearch==8.15.1
+elasticsearch_dsl==8.15.3
 nltk==3.9.1
 requests==2.32.3
 tld==0.13
