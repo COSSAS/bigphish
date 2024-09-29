@@ -1,4 +1,4 @@
-ARG NODE_VERSION
+ARG NODE_VERSION=18.5.0
 FROM node:${NODE_VERSION}
 
 # Set the work directory
