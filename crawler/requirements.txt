@@ -9,7 +9,7 @@ minio==7.2.9
 Pillow==10.4.0
 psutil==6.0.0
 python-whois==0.9.4
-requests==2.32.3
+requests==2.32.4
 selenium==4.25.0
 selenium-wire==5.1.0
 tld==0.13

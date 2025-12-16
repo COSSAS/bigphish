@@ -1,4 +1,4 @@
 APScheduler==3.10.4
 elasticsearch==8.15.1
 elasticsearch_dsl==8.15.3
-requests==2.32.3
+requests==2.32.4

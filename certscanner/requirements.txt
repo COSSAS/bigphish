@@ -1,6 +1,6 @@
 elasticsearch==8.15.1
 elasticsearch_dsl==8.15.3
 nltk==3.9.1
-requests==2.32.3
+requests==2.32.4
 tld==0.13
 websocket-client==1.8.0
