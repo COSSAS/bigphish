@@ -4,6 +4,6 @@ fastapi==0.115.0
 httpx==0.27.2
 minio==7.2.9
 pydantic==2.9.2
-requests==2.32.3
+requests==2.32.4
 tld==0.13
 uvicorn==0.31.0
