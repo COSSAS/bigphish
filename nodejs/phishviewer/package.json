@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "@babel/runtime": "^7.25.6",
+    "@babel/runtime": "^7.28.4",
     "@mapbox/node-pre-gyp": "^1.0.11",
     "axios": "^1.13.2",
     "connect-ensure-login": "^0.1.1",
